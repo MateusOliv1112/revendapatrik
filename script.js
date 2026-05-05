@@ -2,57 +2,6 @@
 //   PATRIK VEÍCULOS — script.js
 // =============================================
 
-// ── DADOS DEMO ────────────────────────────────
-var defaultCars = [
-  {
-    id: 'demo1', marca: 'Volkswagen', modelo: 'Gol', versao: '1.6 MSI Trendline',
-    ano: '2019/2020', preco: '42.900,00', km: '68.000', combustivel: 'Flex',
-    cambio: 'Manual', cor: 'Prata', tipo: 'hatch', portas: '4 portas', status: 'disponivel',
-    img: '["https://www.motortrend.com/uploads/2023/01/2023-volkswagen-gol-02.jpg"]',
-    opcionais: 'Ar condicionado, Direção hidráulica, Vidros elétricos, Travas elétricas',
-    descricao: 'Veículo em excelente estado de conservação, com revisões em dia. Aceita troca e financiamento.'
-  },
-  {
-    id: 'demo2', marca: 'Chevrolet', modelo: 'Onix', versao: '1.0 LT Turbo',
-    ano: '2021/2022', preco: '69.900,00', km: '31.000', combustivel: 'Flex',
-    cambio: 'Automático', cor: 'Branco', tipo: 'hatch', portas: '4 portas', status: 'disponivel',
-    img: '["https://s2.glbimg.com/vUjsqXpxBQXm5dL9lYJLhIzLFOk=/0x0:1920x1080/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/X/P/UPQ6oGQZ6LMPo7jrYK9w/onix-20.jpg"]',
-    opcionais: 'Ar condicionado, Câmbio automático, Central multimídia, Câmera de ré',
-    descricao: 'Onix Turbo automático. Baixa quilometragem, único dono, documentação ok.'
-  },
-  {
-    id: 'demo3', marca: 'Toyota', modelo: 'Hilux', versao: 'SRV 2.8 4x4 AT Diesel',
-    ano: '2018/2018', preco: '189.900,00', km: '95.000', combustivel: 'Diesel',
-    cambio: 'Automático', cor: 'Branco', tipo: 'pickup', portas: '4 portas', status: 'disponivel',
-    img: '["https://s2.glbimg.com/IThWMxbUKY3CsK2_6M3nkDaGvTs=/0x0:620x413/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/6/b/4dvdZXR5mKoWqKPSyMLQ/hilux-2023-fotos-0003.jpg"]',
-    opcionais: 'Ar condicionado digital, Bancos em couro, Central multimídia, Câmera de ré',
-    descricao: 'Hilux SRV completa, revisada na concessionária Toyota. Excelente estado.'
-  },
-  {
-    id: 'demo4', marca: 'Hyundai', modelo: 'HB20', versao: '1.0 Sense',
-    ano: '2022/2023', preco: '58.500,00', km: '22.000', combustivel: 'Flex',
-    cambio: 'Manual', cor: 'Vermelho', tipo: 'hatch', portas: '4 portas', status: 'disponivel',
-    img: '["https://s2.glbimg.com/fjsHyv3A6NFlnjWgMITxS_BZGg0=/0x0:1920x1080/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/W/f/3DlSpLR1SKOrJxPCwOqQ/hb20-2022-fotos.jpg"]',
-    opcionais: 'Ar condicionado, Direção elétrica, Vidros elétricos, Bluetooth',
-    descricao: 'HB20 novíssimo, único dono, sempre revisado. Econômico e confortável.'
-  },
-  {
-    id: 'demo5', marca: 'Jeep', modelo: 'Renegade', versao: 'Sport 1.8 Flex',
-    ano: '2020/2021', preco: '99.900,00', km: '48.000', combustivel: 'Flex',
-    cambio: 'Automático', cor: 'Laranja', tipo: 'suv', portas: '4 portas', status: 'disponivel',
-    img: '["https://s2.glbimg.com/7S4SBqBG3p-_hCEMhF3nvUEzBJo=/0x0:2000x1333/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/e/a/5cj5YFSXy6PVXB39DLBQ/renegade-22.jpg"]',
-    opcionais: 'Ar condicionado, Câmbio automático, Teto solar, Central multimídia, Câmera de ré',
-    descricao: 'Jeep Renegade completo com teto solar. Perfeito estado, sem sinistros.'
-  },
-  {
-    id: 'demo6', marca: 'Fiat', modelo: 'Strada', versao: 'Freedom 1.3 CD',
-    ano: '2022/2022', preco: '89.500,00', km: '37.000', combustivel: 'Flex',
-    cambio: 'Manual', cor: 'Cinza', tipo: 'pickup', portas: '4 portas', status: 'disponivel',
-    img: '["https://s2.glbimg.com/YHXlM6cMqkwQ2mEQqQoWvLBHifk=/0x0:1920x1080/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2023/5/q/v2UvGlSXKSuqvLI3b3jQ/strada-2023.jpg"]',
-    opcionais: 'Ar condicionado, Direção elétrica, Vidros elétricos, Central multimídia',
-    descricao: 'Fiat Strada cabine dupla, versão Freedom completa. Documentação em dia.'
-  }
-];
 
 // ── STORAGE ───────────────────────────────────
 function getCars() {

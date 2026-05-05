@@ -31,11 +31,11 @@
 
 <!-- MENU MOBILE -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#estoque"    onclick="closeMenu()">Estoque</a>
-  <a href="#sobre"      onclick="closeMenu()">Sobre Nós</a>
-  <a href="#servicos"   onclick="closeMenu()">Serviços</a>
+  <a href="#estoque"     onclick="closeMenu()">Estoque</a>
+  <a href="#sobre"       onclick="closeMenu()">Sobre Nós</a>
+  <a href="#servicos"    onclick="closeMenu()">Serviços</a>
   <a href="#localizacao" onclick="closeMenu()">Localização</a>
-  <a href="#contato"    onclick="closeMenu()">Fale Conosco</a>
+  <a href="#contato"     onclick="closeMenu()">Fale Conosco</a>
 </div>
 
 <!-- HERO -->
@@ -72,9 +72,8 @@
       </div>
     </div>
     <div class="hero-image-side">
-      <div style="width:100%;max-width:500px;aspect-ratio:16/9;background:linear-gradient(135deg,#1A1A1A,#222);border-radius:16px;border:1px solid rgba(249,115,22,0.15);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+      <div class="hero-car-placeholder">
         <svg width="64" height="64" fill="none" stroke="rgba(249,115,22,0.3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M19 17H5M4 17l1.5-6h13L20 17M7 10V9a5 5 0 0 1 10 0v1M9 17v2M15 17v2"/></svg>
-        <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#F97316,transparent);"></div>
       </div>
     </div>
   </div>
@@ -108,7 +107,7 @@
   <div class="sobre-inner">
     <div class="sobre-visual">
       <div class="sobre-img-box">
-        <svg width="80" height="80" fill="none" stroke="rgba(249,115,22,0.3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 9.5L12 4l9 5.5V20H3V9.5z"/><path d="M9 20V12h6v8"/></svg>
+        <svg width="80" height="80" fill="none" stroke="rgba(249,115,22,0.3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 9.5L12 4l9 5.5V20H3V9.5z"/><path d="M9 20V12h6v8"/></svg> <!-- Trocar por uma foto da fachada ou da família-->
         <div class="sobre-accent-card">
           <div class="acc-num">+5</div>
           <div class="acc-text">Anos no mercado</div>
@@ -131,7 +130,7 @@
   </div>
 </section>
 
-<!-- SERVICOS -->
+<!-- SERVIÇOS -->
 <section id="servicos">
   <div class="servicos-inner">
     <div class="section-label">O que oferecemos</div>
@@ -412,7 +411,7 @@
               <label>Portas</label>
               <select id="car-portas">
                 <option>2 portas</option>
-                <option>4 portas</option>
+                <option selected>4 portas</option>
               </select>
             </div>
             <div class="admin-form-group">
@@ -424,13 +423,14 @@
               </select>
             </div>
             <div class="admin-form-group full">
-              <label>Fotos do Veículo <span style="color:var(--gray);font-weight:400;">(até 8 fotos)</span></label>
+              <label>Fotos do Veículo <span style="color:var(--gray);font-weight:400;">(até 8 fotos — enviadas para a nuvem)</span></label>
               <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
                 <label for="car-img-file" style="background:var(--orange);color:var(--black);padding:10px 20px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">
                   &#128193; Adicionar Fotos
                 </label>
                 <span style="color:var(--gray);font-size:13px;" id="img-filename">Nenhuma foto</span>
               </div>
+              <div id="upload-progress" style="display:none;color:var(--orange);font-size:13px;font-family:'Montserrat',sans-serif;font-weight:600;margin-bottom:8px;">Enviando...</div>
               <input type="file" id="car-img-file" accept="image/*" multiple style="display:none;" onchange="handleImgUpload(this)">
               <input type="hidden" id="car-img">
               <div class="gallery-preview" id="gallery-preview"></div>
@@ -453,6 +453,7 @@
       <div class="admin-section" id="tab-estoque">
         <div id="admin-cars-list"></div>
       </div>
+
     </div>
   </div>
 </div>
