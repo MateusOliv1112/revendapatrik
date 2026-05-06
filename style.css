@@ -571,7 +571,7 @@ body { background: var(--black); color: var(--white); font-family: 'Inter', sans
 }
 .sobre-accent-card {
   position: absolute;
-  bottom: -10px; right: -10px;
+  bottom: -24px; right: -24px;
   background: var(--orange);
   padding: 20px 24px;
   border-radius: 14px;
