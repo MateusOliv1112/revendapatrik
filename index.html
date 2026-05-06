@@ -100,6 +100,13 @@
     <input type="text" class="search-input" id="searchInput" placeholder="&#128269;  Buscar por marca, modelo, ano..." oninput="searchCars()">
   </div>
   <div class="cars-grid" id="carsGrid"></div>
+
+  <!-- PAGINAÇÃO -->
+  <div id="pagination" style="display:none;max-width:1300px;margin:48px auto 0;padding:0 24px;display:flex;justify-content:center;align-items:center;gap:12px;">
+    <button id="btn-prev" onclick="changePage(-1)" style="background:var(--dark2);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:10px 20px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s;">&#8592; Anterior</button>
+    <span id="page-info" style="color:var(--gray);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;"></span>
+    <button id="btn-next" onclick="changePage(1)" style="background:var(--dark2);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:10px 20px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s;">Próxima &#8594;</button>
+  </div>
 </section>
 
 <!-- SOBRE -->
@@ -107,7 +114,7 @@
   <div class="sobre-inner">
     <div class="sobre-visual">
       <div class="sobre-img-box">
-        <svg width="80" height="80" fill="none" stroke="rgba(249,115,22,0.3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 9.5L12 4l9 5.5V20H3V9.5z"/><path d="M9 20V12h6v8"/></svg> <!-- Trocar por uma foto da fachada ou da família-->
+        <svg width="80" height="80" fill="none" stroke="rgba(249,115,22,0.3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 9.5L12 4l9 5.5V20H3V9.5z"/><path d="M9 20V12h6v8"/></svg>
         <div class="sobre-accent-card">
           <div class="acc-num">+5</div>
           <div class="acc-text">Anos no mercado</div>
@@ -415,6 +422,14 @@
               </select>
             </div>
             <div class="admin-form-group">
+              <label>Enquadramento da Foto</label>
+              <select id="car-position">
+                <option value="center">Centro (padrão)</option>
+                <option value="top">Topo</option>
+                <option value="bottom">Baixo</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
               <label>Status</label>
               <select id="car-status">
                 <option value="disponivel">Disponível</option>
@@ -458,8 +473,7 @@
   </div>
 </div>
 
-<!-- BOTÃO ADMIN -->
-<div class="admin-badge" onclick="openAdmin()">&#9881;&#65039; Admin</div>
+<!-- ACESSO ADMIN VIA LINK SECRETO: seusite.com/#admin-patrik -->
 
 <!-- WPP FLUTUANTE -->
 <a href="https://wa.me/5548996192000?text=Ol%C3%A1!%20Vim%20pelo%20site%20Patrik%20Ve%C3%ADculos." target="_blank" class="wpp-float" title="WhatsApp">

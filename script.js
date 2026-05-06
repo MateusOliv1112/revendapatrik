@@ -4,10 +4,10 @@
 
 // ── CONFIGURAÇÕES ─────────────────────────────
 var CONFIG = {
-  cloudinaryCloud:  'dzqyqfqni',
+  cloudinaryCloud:  'SEU_CLOUD_NAME',
   cloudinaryPreset: 'patrik_veiculos',
-  jsonbinId:        '69fb9c23c0954111d8e81015',
-  jsonbinKey:       '$2a$10$zYCINogbAmS080flZ97RmurRIdKw7uMOr0doQOiARtw61tFLBH6im ',
+  jsonbinId:        'SEU_JSONBIN_ID',
+  jsonbinKey:       'SEU_JSONBIN_API_KEY',
   whatsapp:         '5548996192000'
 };
 
@@ -102,17 +102,39 @@ function renderCars() {
 
   if (!list.length) {
     grid.innerHTML = '<div class="no-cars"><p style="font-size:40px;margin-bottom:16px">&#128269;</p><p>Nenhum veículo encontrado.</p></div>';
+    document.getElementById('pagination').style.display = 'none';
     return;
   }
 
+  // paginação
+  var totalPages = Math.ceil(list.length / CARS_PER_PAGE);
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
+  var start = (currentPage - 1) * CARS_PER_PAGE;
+  var end   = start + CARS_PER_PAGE;
+  var paginated = list.slice(start, end);
+
+  // atualizar controles de paginação
+  var pagDiv = document.getElementById('pagination');
+  if (totalPages > 1) {
+    pagDiv.style.display = 'flex';
+    document.getElementById('page-info').textContent = 'Página ' + currentPage + ' de ' + totalPages;
+    document.getElementById('btn-prev').disabled = currentPage === 1;
+    document.getElementById('btn-prev').style.opacity = currentPage === 1 ? '0.4' : '1';
+    document.getElementById('btn-next').disabled = currentPage === totalPages;
+    document.getElementById('btn-next').style.opacity = currentPage === totalPages ? '0.4' : '1';
+  } else {
+    pagDiv.style.display = 'none';
+  }
+
   var html = '';
-  for (var i = 0; i < list.length; i++) {
-    var c = list[i];
+  for (var i = 0; i < paginated.length; i++) {
+    var c = paginated[i];
     var img = getFirstImg(c);
     html += '<div class="car-card" onclick="openCarPage(\'' + c.id + '\')">';
     html += '  <div class="car-card-img">';
     if (img) {
-      html += '    <img src="' + img + '" alt="' + c.marca + ' ' + c.modelo + '" onerror="this.style.display=\'none\'">';
+      html += '    <img src="' + img + '" alt="' + c.marca + ' ' + c.modelo + '" style="object-position:' + (c.position || 'center') + ';" onerror="this.style.display=\'none\'">';
     }
     html += '    <div class="car-badge">' + c.combustivel + '</div>';
     html += '  </div>';
@@ -136,16 +158,27 @@ function renderCars() {
   grid.innerHTML = html;
 }
 
+var currentPage   = 1;
+var CARS_PER_PAGE = 12;
+
 function filterCars(tipo, btn) {
   activeFilter = tipo;
+  currentPage  = 1;
   document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   renderCars();
 }
 
 function searchCars() {
-  searchTerm = document.getElementById('searchInput').value;
+  searchTerm  = document.getElementById('searchInput').value;
+  currentPage = 1;
   renderCars();
+}
+
+function changePage(dir) {
+  currentPage += dir;
+  renderCars();
+  document.getElementById('estoque').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ── PÁGINA DO CARRO (nova aba) ────────────────
@@ -534,6 +567,7 @@ function saveCar() {
     cor:         document.getElementById('car-cor').value.trim() || 'Não informado',
     tipo:        document.getElementById('car-tipo').value,
     portas:      document.getElementById('car-portas').value,
+    position:    document.getElementById('car-position').value,
     status:      document.getElementById('car-status').value,
     img:         document.getElementById('car-img').value,
     opcionais:   document.getElementById('car-opcionais').value.trim(),
@@ -568,6 +602,7 @@ function clearForm() {
   document.getElementById('car-cambio').value      = '';
   document.getElementById('car-tipo').value        = 'hatch';
   document.getElementById('car-status').value      = 'disponivel';
+  document.getElementById('car-position').value    = 'center';
   document.getElementById('edit-car-id').value     = '';
   adminPhotos = [];
   document.getElementById('car-img-file').value       = '';
@@ -598,6 +633,7 @@ function editCar(id) {
   document.getElementById('car-tipo').value         = car.tipo;
   document.getElementById('car-portas').value       = car.portas;
   document.getElementById('car-status').value       = car.status;
+  document.getElementById('car-position').value     = car.position || 'center';
   document.getElementById('car-img').value          = car.img || '';
   document.getElementById('car-opcionais').value    = car.opcionais || '';
   document.getElementById('car-descricao').value    = car.descricao || '';
@@ -685,4 +721,17 @@ document.addEventListener('DOMContentLoaded', function() {
     var total = currentCars.filter(function(c) { return c.status === 'disponivel'; }).length;
     animateCounter(document.getElementById('countCars'), total, 1200);
   });
+
+  // Link secreto admin — acesse: seusite.com/#admin-patrik
+  if (window.location.hash === '#admin-patrik') {
+    history.replaceState(null, '', window.location.pathname);
+    openAdmin();
+  }
+});
+
+window.addEventListener('hashchange', function() {
+  if (window.location.hash === '#admin-patrik') {
+    history.replaceState(null, '', window.location.pathname);
+    openAdmin();
+  }
 });
