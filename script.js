@@ -455,10 +455,11 @@ function uploadToCloudinary(file, onSuccess, onError) {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
+    console.log('Cloudinary response:', data);
     if (data.secure_url) onSuccess(data.secure_url);
-    else onError('Erro no upload');
+    else onError(data.error ? data.error.message : 'Erro no upload');
   })
-  .catch(function(e) { onError(e); });
+  .catch(function(e) { console.error('Cloudinary fetch error:', e); onError(e.message || e); });
 }
 
 function handleImgUpload(input) {
