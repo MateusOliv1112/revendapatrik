@@ -1238,6 +1238,23 @@ footer {
   .sobre-visual { display: none; }
   .admin-form-grid { grid-template-columns: 1fr; }
   .footer-top   { grid-template-columns: 1fr; }
+
+  /* Admin header compacto no celular */
+  .admin-header { padding: 0 12px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+  .admin-header h1 { font-size: 20px; letter-spacing: 1px; }
+  .admin-header button { padding: 6px 12px !important; font-size: 11px !important; }
+
+  /* Lista de carros no admin: empilhar imagem+info em cima, botões embaixo */
+  .admin-car-row { flex-wrap: wrap; gap: 12px; padding: 12px; }
+  .admin-car-row-info { flex: 1 1 calc(100% - 76px); min-width: 0; }
+  .admin-car-row-info h4 { font-size: 14px; }
+  .admin-car-row-info p { font-size: 12px; }
+  .admin-car-row-actions { flex: 1 1 100%; justify-content: flex-end; }
+  .admin-car-row-actions .btn-edit,
+  .admin-car-row-actions .btn-del { padding: 8px 14px; font-size: 12px; }
+
+  .admin-body { padding: 24px 16px; }
+  .admin-tab { padding: 10px 16px; font-size: 12px; }
 }
 @media (max-width: 480px) {
   .hero-btns { flex-direction: column; }
