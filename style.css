@@ -1242,6 +1242,8 @@ footer {
 @media (max-width: 480px) {
   .hero-btns { flex-direction: column; }
   .sobre-values { grid-template-columns: 1fr; }
-  .cars-grid { padding: 0 12px; }
-  .section-header, .filter-bar, .search-bar { padding: 0 12px; }
+  .cars-grid { padding-left: 12px; padding-right: 12px; }
+  .section-header { padding-left: 12px; padding-right: 12px; }
+  .filter-bar    { padding-left: 12px; padding-right: 12px; }
+  .search-bar    { padding-left: 12px; padding-right: 12px; }
 }
