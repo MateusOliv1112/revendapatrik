@@ -19,7 +19,7 @@
 
 /* ── RESET ───────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body { background: var(--black); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
 /* ── SCROLLBAR ───────────────────────────────── */
@@ -1241,4 +1241,7 @@ footer {
 }
 @media (max-width: 480px) {
   .hero-btns { flex-direction: column; }
+  .sobre-values { grid-template-columns: 1fr; }
+  .cars-grid { padding: 0 12px; }
+  .section-header, .filter-bar, .search-bar { padding: 0 12px; }
 }
