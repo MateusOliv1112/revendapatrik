@@ -4,10 +4,10 @@
 
 // ── CONFIGURAÇÕES ─────────────────────────────
 var CONFIG = {
-  cloudinaryCloud:  'SEU_CLOUD_NAME',
+  cloudinaryCloud:  'dzqyqfqni',
   cloudinaryPreset: 'patrik_veiculos',
-  jsonbinId:        'SEU_JSONBIN_ID',
-  jsonbinKey:       'SEU_JSONBIN_API_KEY',
+  jsonbinId:        '69fb9c23c0954111d8e81015',
+  jsonbinKey:       '$2a$10$oHlqWBJRiQHv.xlFSaNPtuN55dd.sS1KFylI9nsdrxn4ZIXEfaCFq',
   whatsapp:         '5548996192000'
 };
 
