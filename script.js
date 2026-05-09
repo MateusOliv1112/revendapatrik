@@ -18,8 +18,11 @@ var searchTerm     = '';
 var adminPhotos    = [];
 var adminLoggedIn  = false;
 var isLoading      = false;
-var ADMIN_USER     = 'patrik';
-var ADMIN_PASS     = 'patrik2025';
+// Hashes SHA-256 — nunca armazene senhas em texto puro no frontend
+// Para gerar novo hash: crypto.subtle.digest('SHA-256', new TextEncoder().encode('suasenha'))
+//   .then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')))
+var ADMIN_USER_HASH = 'f4f5bb0e870b0e8aff4b1f5fa4a798d87a04d7958edc7865f72a2a53ea123f3d';
+var ADMIN_PASS_HASH = 'f6874aac2bdc3f57125c1b91c0d27c4c30cf8a12b55c1f44c346fd5c9a7eafc5';
 
 // ── JSONBIN — CARREGAR ────────────────────────
 function loadCars(callback) {
@@ -56,6 +59,16 @@ function saveCarsRemote(callback) {
 }
 
 // ── HELPERS ───────────────────────────────────
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function getCarImgs(car) {
   if (!car.img) return [];
   try {
@@ -131,26 +144,27 @@ function renderCars() {
   for (var i = 0; i < paginated.length; i++) {
     var c = paginated[i];
     var img = getFirstImg(c);
-    html += '<div class="car-card" onclick="openCarPage(\'' + c.id + '\')">';
+    var safeId = escapeHtml(c.id);
+    html += '<div class="car-card" onclick="openCarPage(\'' + safeId + '\')">';
     html += '  <div class="car-card-img">';
     if (img) {
-      html += '    <img src="' + img + '" alt="' + c.marca + ' ' + c.modelo + '" style="object-position:' + (c.position || 'center') + ';" onerror="this.style.display=\'none\'">';
+      html += '    <img src="' + escapeHtml(img) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(c.position || 'center') + ';" onerror="this.style.display=\'none\'">';
     }
-    html += '    <div class="car-badge">' + c.combustivel + '</div>';
+    html += '    <div class="car-badge">' + escapeHtml(c.combustivel) + '</div>';
     html += '  </div>';
     html += '  <div class="car-card-body">';
-    html += '    <div class="car-name">' + c.marca + ' ' + c.modelo + '</div>';
-    html += '    <div class="car-version">' + c.versao + ' &bull; ' + c.ano + '</div>';
+    html += '    <div class="car-name">' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '</div>';
+    html += '    <div class="car-version">' + escapeHtml(c.versao) + ' &bull; ' + escapeHtml(c.ano) + '</div>';
     html += '    <div class="car-specs">';
-    html += '      <span class="car-spec">&#128205; ' + c.km + ' km</span>';
-    html += '      <span class="car-spec">&#9881; ' + c.cambio + '</span>';
-    html += '      <span class="car-spec">&#127912; ' + c.cor + '</span>';
+    html += '      <span class="car-spec">&#128205; ' + escapeHtml(c.km) + ' km</span>';
+    html += '      <span class="car-spec">&#9881; ' + escapeHtml(c.cambio) + '</span>';
+    html += '      <span class="car-spec">&#127912; ' + escapeHtml(c.cor) + '</span>';
     html += '    </div>';
     html += '    <div class="car-price-label">Valor</div>';
-    html += '    <div class="car-price">R$ ' + fmtPrice(c.preco) + '</div>';
+    html += '    <div class="car-price">R$ ' + escapeHtml(fmtPrice(c.preco)) + '</div>';
     html += '    <div class="car-card-footer">';
-    html += '      <button class="car-btn-detail" onclick="event.stopPropagation();openCarPage(\'' + c.id + '\')">Ver Detalhes</button>';
-    html += '      <button class="car-btn-wpp" onclick="event.stopPropagation();sendWpp(\'' + c.id + '\')">&#128172; WhatsApp</button>';
+    html += '      <button class="car-btn-detail" onclick="event.stopPropagation();openCarPage(\'' + safeId + '\')">Ver Detalhes</button>';
+    html += '      <button class="car-btn-wpp" onclick="event.stopPropagation();sendWpp(\'' + safeId + '\')">&#128172; WhatsApp</button>';
     html += '    </div>';
     html += '  </div>';
     html += '</div>';
@@ -187,8 +201,8 @@ function openCarPage(id) {
   if (!car) return;
 
   var imgs   = getCarImgs(car);
-  var preco  = fmtPrice(car.preco);
-  var tipo   = car.tipo.charAt(0).toUpperCase() + car.tipo.slice(1);
+  var preco  = escapeHtml(fmtPrice(car.preco));
+  var tipo   = escapeHtml(car.tipo.charAt(0).toUpperCase() + car.tipo.slice(1));
   var wppMsg = encodeURIComponent('Olá! Vi o ' + car.marca + ' ' + car.modelo + ' ' + car.versao + ' ' + car.ano + ' no site da Patrik Veículos e tenho interesse!');
   var wppLink = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + wppMsg;
 
@@ -260,7 +274,7 @@ function openCarPage(id) {
   pg += '<!DOCTYPE html><html lang="pt-BR"><head>';
   pg += '<meta charset="UTF-8">';
   pg += '<meta name="viewport" content="width=device-width,initial-scale=1">';
-  pg += '<title>' + car.marca + ' ' + car.modelo + ' &mdash; Patrik Ve&iacute;culos</title>';
+  pg += '<title>' + escapeHtml(car.marca) + ' ' + escapeHtml(car.modelo) + ' &mdash; Patrik Ve&iacute;culos</title>';
   pg += '<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
   pg += '<style>';
   pg += '*{margin:0;padding:0;box-sizing:border-box;}';
@@ -306,9 +320,9 @@ function openCarPage(id) {
   pg += '<div class="hero"><div class="grid">';
   pg += '  <div>' + sliderHtml + '</div>';
   pg += '  <div>';
-  pg += '    <div class="badges"><span class="bdg">' + car.combustivel + '</span><span class="bdg">' + car.cambio + '</span><span class="bdg">' + tipo + '</span></div>';
-  pg += '    <div class="ctitle">' + car.marca + ' ' + car.modelo + '</div>';
-  pg += '    <div class="csub">' + (car.versao || '') + ' &nbsp;&bull;&nbsp; ' + car.ano + '</div>';
+  pg += '    <div class="badges"><span class="bdg">' + escapeHtml(car.combustivel) + '</span><span class="bdg">' + escapeHtml(car.cambio) + '</span><span class="bdg">' + tipo + '</span></div>';
+  pg += '    <div class="ctitle">' + escapeHtml(car.marca) + ' ' + escapeHtml(car.modelo) + '</div>';
+  pg += '    <div class="csub">' + escapeHtml(car.versao || '') + ' &nbsp;&bull;&nbsp; ' + escapeHtml(car.ano) + '</div>';
   pg += '    <div class="pbox"><div class="plbl">Valor</div><div class="pval">R$ ' + preco + '</div></div>';
   pg += '    <a href="' + wppLink + '" target="_blank" class="wbtn">&#128172; Tenho Interesse &mdash; WhatsApp</a>';
   pg += '    <a href="tel:+' + CONFIG.whatsapp + '" class="cbtn">&#128222; Ligar: (48) 99619-2000</a>';
@@ -318,16 +332,16 @@ function openCarPage(id) {
   pg += '<div class="specs">';
   pg += '  <div class="stitle">FICHA <span>T&Eacute;CNICA</span></div>';
   pg += '  <div class="sgrid">';
-  pg += '    <div class="scard"><div class="slbl">Marca</div><div class="sval">'            + car.marca              + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Modelo</div><div class="sval">'           + car.modelo             + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Vers&atilde;o</div><div class="sval">'    + (car.versao || '&mdash;') + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Ano</div><div class="sval">'              + car.ano                + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Quilometragem</div><div class="sval">'   + car.km + ' km'         + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Combust&iacute;vel</div><div class="sval">' + car.combustivel     + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">C&acirc;mbio</div><div class="sval">'    + car.cambio             + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Cor</div><div class="sval">'              + car.cor               + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Portas</div><div class="sval">'           + car.portas            + '</div></div>';
-  pg += '    <div class="scard"><div class="slbl">Categoria</div><div class="sval">'        + tipo                  + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Marca</div><div class="sval">'            + escapeHtml(car.marca)              + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Modelo</div><div class="sval">'           + escapeHtml(car.modelo)             + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Vers&atilde;o</div><div class="sval">'    + (car.versao ? escapeHtml(car.versao) : '&mdash;') + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Ano</div><div class="sval">'              + escapeHtml(car.ano)                + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Quilometragem</div><div class="sval">'   + escapeHtml(car.km) + ' km'         + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Combust&iacute;vel</div><div class="sval">' + escapeHtml(car.combustivel)     + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">C&acirc;mbio</div><div class="sval">'    + escapeHtml(car.cambio)             + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Cor</div><div class="sval">'              + escapeHtml(car.cor)               + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Portas</div><div class="sval">'           + escapeHtml(car.portas)            + '</div></div>';
+  pg += '    <div class="scard"><div class="slbl">Categoria</div><div class="sval">'        + tipo                              + '</div></div>';
   pg += '  </div>';
   if (opHtml) {
     pg += '  <div class="stitle">OPCIONAIS</div>';
@@ -335,7 +349,7 @@ function openCarPage(id) {
   }
   if (car.descricao) {
     pg += '  <div class="stitle">DESCRI&Ccedil;&Atilde;O</div>';
-    pg += '  <div class="desc"><p>' + car.descricao + '</p></div>';
+    pg += '  <div class="desc"><p>' + escapeHtml(car.descricao) + '</p></div>';
   }
   pg += '</div>';
 
@@ -396,17 +410,28 @@ function adminLogout() {
   document.getElementById('admin-login-screen').style.display = 'flex';
   closeAdmin();
 }
+function sha256(str) {
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+    .then(function(buf) {
+      return Array.from(new Uint8Array(buf))
+        .map(function(b) { return b.toString(16).padStart(2, '0'); })
+        .join('');
+    });
+}
+
 function doLogin() {
   var u = document.getElementById('admin-user').value;
   var p = document.getElementById('admin-pass').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    adminLoggedIn = true;
-    showAdminMain();
-  } else {
-    var err = document.getElementById('admin-error-msg');
-    err.style.display = 'block';
-    setTimeout(function() { err.style.display = 'none'; }, 3000);
-  }
+  Promise.all([sha256(u), sha256(p)]).then(function(hashes) {
+    if (hashes[0] === ADMIN_USER_HASH && hashes[1] === ADMIN_PASS_HASH) {
+      adminLoggedIn = true;
+      showAdminMain();
+    } else {
+      var err = document.getElementById('admin-error-msg');
+      err.style.display = 'block';
+      setTimeout(function() { err.style.display = 'none'; }, 3000);
+    }
+  });
 }
 
 // ── ADMIN — TABS ──────────────────────────────
@@ -461,14 +486,14 @@ function handleImgUpload(input) {
       function(url) {
         adminPhotos.push(url);
         done++;
-        prog.textContent = 'Enviando ' + (done + errors) + ' de ' + total + '...';
-        if (done + errors === total) finalizeUpload(total, errors);
+        prog.textContent = 'Enviando ' + done + ' de ' + total + '...';
+        if (done === total) finalizeUpload(total, errors);
       },
       function() {
         errors++;
         done++;
-        prog.textContent = 'Enviando ' + (done + errors) + ' de ' + total + '...';
-        if (done + errors === total) finalizeUpload(total, errors);
+        prog.textContent = 'Enviando ' + done + ' de ' + total + '...';
+        if (done === total) finalizeUpload(total, errors);
       }
     );
   });
@@ -673,19 +698,20 @@ function renderAdminList() {
     var c   = currentCars[i];
     var img = getFirstImg(c);
     var sc  = c.status === 'disponivel' ? '#4ADE80' : c.status === 'vendido' ? '#ef4444' : '#fbbf24';
-    var sl  = c.status.charAt(0).toUpperCase() + c.status.slice(1);
+    var sl  = escapeHtml(c.status.charAt(0).toUpperCase() + c.status.slice(1));
+    var safeId = escapeHtml(c.id);
     h += '<div class="admin-car-row">';
     h += '  <div style="width:60px;height:40px;background:var(--dark3);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-width:60px;">';
-    if (img) h += '    <img src="' + img + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
+    if (img) h += '    <img src="' + escapeHtml(img) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
     else h += '&#128663;';
     h += '  </div>';
     h += '  <div class="admin-car-row-info">';
-    h += '    <h4>' + c.marca + ' ' + c.modelo + ' ' + (c.versao || '') + '</h4>';
-    h += '    <p>' + c.ano + ' &bull; ' + c.km + ' km &bull; R$ ' + fmtPrice(c.preco) + ' &bull; <span style="color:' + sc + '">' + sl + '</span></p>';
+    h += '    <h4>' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + ' ' + escapeHtml(c.versao || '') + '</h4>';
+    h += '    <p>' + escapeHtml(c.ano) + ' &bull; ' + escapeHtml(c.km) + ' km &bull; R$ ' + escapeHtml(fmtPrice(c.preco)) + ' &bull; <span style="color:' + sc + '">' + sl + '</span></p>';
     h += '  </div>';
     h += '  <div class="admin-car-row-actions">';
-    h += '    <button class="btn-edit" onclick="editCar(\'' + c.id + '\')">&#9998; Editar</button>';
-    h += '    <button class="btn-del" onclick="deleteCar(\'' + c.id + '\')">&#128465; Remover</button>';
+    h += '    <button class="btn-edit" onclick="editCar(\'' + safeId + '\')">&#9998; Editar</button>';
+    h += '    <button class="btn-del" onclick="deleteCar(\'' + safeId + '\')">&#128465; Remover</button>';
     h += '  </div>';
     h += '</div>';
   }
