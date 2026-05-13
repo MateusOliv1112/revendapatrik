@@ -182,7 +182,7 @@ function renderCars() {
     html += '<div class="car-card" onclick="openCarPage(\'' + safeId + '\')">';
     html += '  <div class="car-card-img">';
     if (img) {
-      html += '    <img src="' + escapeHtml(cloudinaryHQ(img, 500, 312)) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(getCarPosition(c, 0)) + ';" onerror="this.style.display=\'none\'">';
+      html += '    <img src="' + escapeHtml(cloudinaryHQ(img, 500)) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(getCarPosition(c, 0)) + ';" onerror="this.style.display=\'none\'">';
     }
     html += '    <div class="car-badge">' + escapeHtml(c.combustivel) + '</div>';
     html += '  </div>';
