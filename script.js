@@ -105,6 +105,12 @@ function getCarPosition(car, idx) {
   return idx === 0 ? (car.position || 'center') : 'center';
 }
 
+function cloudinaryHQ(url) {
+  if (!url || url.indexOf('res.cloudinary.com') === -1) return url;
+  if (url.indexOf('q_auto') !== -1) return url;
+  return url.replace('/upload/', '/upload/q_auto:best,f_auto/');
+}
+
 function fmtPrice(p) {
   if (!p) return '0,00';
   return p.indexOf(',') !== -1 ? p : p + ',00';
@@ -169,7 +175,7 @@ function renderCars() {
     html += '<div class="car-card" onclick="openCarPage(\'' + safeId + '\')">';
     html += '  <div class="car-card-img">';
     if (img) {
-      html += '    <img src="' + escapeHtml(img) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(getCarPosition(c, 0)) + ';" onerror="this.style.display=\'none\'">';
+      html += '    <img src="' + escapeHtml(cloudinaryHQ(img)) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(getCarPosition(c, 0)) + ';" onerror="this.style.display=\'none\'">';
     }
     html += '    <div class="car-badge">' + escapeHtml(c.combustivel) + '</div>';
     html += '  </div>';
@@ -238,7 +244,8 @@ function openCarPage(id) {
   var car = currentCars.find(function(c) { return c.id === id; });
   if (!car) return;
 
-  var imgs   = getCarImgs(car);
+  var imgs    = getCarImgs(car);
+  var hqImgs  = imgs.map(function(u) { return cloudinaryHQ(u); });
   var preco  = escapeHtml(fmtPrice(car.preco));
   var tipo   = escapeHtml(car.tipo.charAt(0).toUpperCase() + car.tipo.slice(1));
   var wppMsg = encodeURIComponent('Olá! Vi o ' + car.marca + ' ' + car.modelo + ' ' + car.versao + ' ' + car.ano + ' no site da Patrik Veículos e tenho interesse!');
@@ -257,17 +264,19 @@ function openCarPage(id) {
   if (!imgs.length) {
     sliderHtml = '<div style="height:280px;display:flex;align-items:center;justify-content:center;color:#555;font-family:Montserrat,sans-serif;background:#1a1a1a;border-radius:12px;">Sem foto disponível</div>';
   } else if (imgs.length === 1) {
-    sliderHtml = '<div style="aspect-ratio:16/10;overflow:hidden;border-radius:12px;"><img src="' + imgs[0] + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (carPositions[0] || 'center') + ';"></div>';
+    sliderHtml = '<div style="aspect-ratio:16/10;overflow:hidden;border-radius:12px;cursor:zoom-in;position:relative;" onclick="openLightbox(sImgs,0)">';
+    sliderHtml += '<img src="' + hqImgs[0] + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (carPositions[0] || 'center') + ';pointer-events:none;">';
+    sliderHtml += '</div>';
   } else {
     sliderHtml += '<div id="sWrap" style="position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:12px;">';
-    sliderHtml += '  <img id="sImg" src="' + imgs[0] + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (carPositions[0] || 'center') + ';transition:opacity 0.3s;">';
+    sliderHtml += '  <img id="sImg" src="' + hqImgs[0] + '" onclick="openLightbox(sImgs,sIdx)" style="width:100%;height:100%;object-fit:cover;object-position:' + (carPositions[0] || 'center') + ';transition:opacity 0.3s;cursor:zoom-in;">';
     sliderHtml += '  <button onclick="sPrev()" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8249;</button>';
     sliderHtml += '  <button onclick="sNext()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8250;</button>';
     sliderHtml += '  <div id="sCnt" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.65);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;font-family:Montserrat,sans-serif;">1 / ' + imgs.length + '</div>';
     sliderHtml += '</div>';
     sliderHtml += '<div style="display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px;">';
     for (var t = 0; t < imgs.length; t++) {
-      sliderHtml += '<img src="' + imgs[t] + '" id="th' + t + '" onclick="sGo(' + t + ')" style="width:72px;height:52px;object-fit:cover;object-position:' + (carPositions[t] || 'center') + ';border-radius:6px;cursor:pointer;flex-shrink:0;border:' + (t === 0 ? '2px solid #F97316' : '2px solid transparent') + ';opacity:' + (t === 0 ? '1' : '0.65') + ';transition:all 0.2s;">';
+      sliderHtml += '<img src="' + hqImgs[t] + '" id="th' + t + '" onclick="sGo(' + t + ')" style="width:72px;height:52px;object-fit:cover;object-position:' + (carPositions[t] || 'center') + ';border-radius:6px;cursor:pointer;flex-shrink:0;border:' + (t === 0 ? '2px solid #F97316' : '2px solid transparent') + ';opacity:' + (t === 0 ? '1' : '0.65') + ';transition:all 0.2s;">';
     }
     sliderHtml += '</div>';
   }
@@ -287,7 +296,7 @@ function openCarPage(id) {
   // slider JS — injetado como string para evitar conflito com tag script
   var sjs = '';
   if (imgs.length > 1) {
-    sjs += 'var sImgs=' + JSON.stringify(imgs) + ';';
+    sjs += 'var sImgs=' + JSON.stringify(hqImgs) + ';';
     sjs += 'var sPos=' + JSON.stringify(carPositions) + ';';
     sjs += 'var sIdx=0;';
     sjs += 'function sGo(i){';
@@ -360,8 +369,18 @@ function openCarPage(id) {
   pg += '.ftr span{color:#F97316;}';
   pg += '@media(max-width:768px){.grid{grid-template-columns:1fr;gap:24px;}.ctitle{font-size:32px;}.pval{font-size:36px;}.hero,.specs{padding:20px 16px;}.bar{padding:12px 16px;}.logo{font-size:18px;}}';
   pg += '@media(max-width:400px){.ctitle{font-size:26px;}.pval{font-size:30px;}.pbox{padding:14px 16px;}}';
+  pg += '#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:9999;align-items:center;justify-content:center;}';
+  pg += '.lb-btn{background:rgba(30,30,30,0.85);border:2px solid rgba(255,255,255,0.2);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:30px;line-height:1;transition:background 0.2s;}';
+  pg += '.lb-btn:hover{background:rgba(249,115,22,0.75);}';
   pg += '</style></head><body>';
 
+  pg += '<div id="lb" onclick="lbClickOut(event)">';
+  pg += '<button class="lb-btn" onclick="lbClose();event.stopPropagation();" style="position:absolute;top:16px;right:20px;width:46px;height:46px;">&#215;</button>';
+  pg += '<button id="lb-prev" class="lb-btn" onclick="lbPrev();event.stopPropagation();" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:54px;height:54px;">&#8249;</button>';
+  pg += '<img id="lb-img" src="" style="max-width:95vw;max-height:88vh;object-fit:contain;border-radius:8px;transition:opacity 0.2s;box-shadow:0 8px 40px rgba(0,0,0,0.8);">';
+  pg += '<button id="lb-next" class="lb-btn" onclick="lbNext();event.stopPropagation();" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:54px;height:54px;">&#8250;</button>';
+  pg += '<div id="lb-cnt" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;font-size:13px;font-weight:700;padding:6px 18px;border-radius:20px;font-family:Montserrat,sans-serif;"></div>';
+  pg += '</div>';
   pg += '<div class="bar">';
   pg += '  <a href="javascript:window.close()" class="back">&#8592; Voltar ao Estoque</a>';
   pg += '  <div class="logo">PATRIK VE&Iacute;CULOS</div>';
@@ -405,8 +424,53 @@ function openCarPage(id) {
 
   pg += '<div class="ftr">&copy; 2025 <span>Patrik Ve&iacute;culos</span> &mdash; Bairro Paraguai, Jacinto Machado/SC &mdash; (48) 99619-2000</div>';
 
-  if (sjs) {
-    pg += '<scr' + 'ipt>' + sjs + '<\/scr' + 'ipt>';
+  var lbJs = '';
+  lbJs += 'var lbImgs=[],lbIdx=0;';
+  lbJs += 'function openLightbox(imgs,idx){';
+  lbJs += '  lbImgs=imgs;lbIdx=idx||0;';
+  lbJs += '  var single=lbImgs.length<=1;';
+  lbJs += '  var p=document.getElementById("lb-prev"),n=document.getElementById("lb-next"),cnt=document.getElementById("lb-cnt");';
+  lbJs += '  if(p)p.style.display=single?"none":"flex";';
+  lbJs += '  if(n)n.style.display=single?"none":"flex";';
+  lbJs += '  if(cnt)cnt.style.display=single?"none":"block";';
+  lbJs += '  var img=document.getElementById("lb-img");';
+  lbJs += '  img.style.opacity=1;img.src=lbImgs[lbIdx];';
+  lbJs += '  if(!single&&cnt)cnt.textContent=(lbIdx+1)+" / "+lbImgs.length;';
+  lbJs += '  document.getElementById("lb").style.display="flex";';
+  lbJs += '  document.body.style.overflow="hidden";';
+  lbJs += '}';
+  lbJs += 'function lbClose(){document.getElementById("lb").style.display="none";document.body.style.overflow="";}';
+  lbJs += 'function lbGo(i){';
+  lbJs += '  lbIdx=(i+lbImgs.length)%lbImgs.length;';
+  lbJs += '  var img=document.getElementById("lb-img");';
+  lbJs += '  img.style.opacity=0;';
+  lbJs += '  setTimeout(function(){img.src=lbImgs[lbIdx];img.style.opacity=1;},120);';
+  lbJs += '  var cnt=document.getElementById("lb-cnt");';
+  lbJs += '  if(cnt)cnt.textContent=(lbIdx+1)+" / "+lbImgs.length;';
+  lbJs += '}';
+  lbJs += 'function lbNext(){lbGo(lbIdx+1);}';
+  lbJs += 'function lbPrev(){lbGo(lbIdx-1);}';
+  lbJs += 'function lbClickOut(e){if(e.target.id==="lb")lbClose();}';
+  lbJs += 'document.addEventListener("keydown",function(e){';
+  lbJs += '  if(document.getElementById("lb").style.display!=="flex")return;';
+  lbJs += '  if(e.key==="Escape")lbClose();';
+  lbJs += '  else if(e.key==="ArrowRight")lbNext();';
+  lbJs += '  else if(e.key==="ArrowLeft")lbPrev();';
+  lbJs += '});';
+  lbJs += '(function(){';
+  lbJs += '  var lb=document.getElementById("lb"),sx=0;';
+  lbJs += '  lb.addEventListener("touchstart",function(e){sx=e.touches[0].clientX;},{passive:true});';
+  lbJs += '  lb.addEventListener("touchend",function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){dx<0?lbNext():lbPrev();}});';
+  lbJs += '})();';
+
+  var allJs = '';
+  if (imgs.length === 1) {
+    allJs = 'var sImgs=' + JSON.stringify(hqImgs) + ';var sIdx=0;' + lbJs;
+  } else if (sjs) {
+    allJs = sjs + lbJs;
+  }
+  if (allJs) {
+    pg += '<scr' + 'ipt>' + allJs + '<\/scr' + 'ipt>';
   }
   pg += '</body></html>';
 
