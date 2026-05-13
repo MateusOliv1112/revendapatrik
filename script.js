@@ -703,8 +703,8 @@ function openCropModal(idx) {
   cropX  = xy[0];
   cropY  = xy[1];
   var url = adminPhotos[cropPhotoIdx];
-  document.getElementById('crop-full-img').src = url;
-  document.getElementById('crop-prev-img').src = url;
+  document.getElementById('crop-full-img').src = cloudinaryHQ(url, 800);
+  document.getElementById('crop-prev-img').src = cloudinaryHQ(url, 400);
   var label = cropPhotoIdx === 0 ? 'Ajustar Enquadramento — Foto de Capa' : 'Ajustar Enquadramento — Foto ' + (cropPhotoIdx + 1);
   document.querySelector('.crop-header span').textContent = label;
   updateCropUI();
@@ -910,7 +910,7 @@ function renderAdminList() {
     var safeId = escapeHtml(c.id);
     h += '<div class="admin-car-row">';
     h += '  <div style="width:60px;height:40px;background:var(--dark3);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-width:60px;">';
-    if (img) h += '    <img src="' + escapeHtml(img) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
+    if (img) h += '    <img src="' + escapeHtml(cloudinaryHQ(img, 30, 19)) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
     else h += '&#128663;';
     h += '  </div>';
     h += '  <div class="admin-car-row-info">';
