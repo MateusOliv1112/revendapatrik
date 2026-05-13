@@ -278,7 +278,8 @@ function openCarPage(id) {
   pg += '<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
   pg += '<style>';
   pg += '*{margin:0;padding:0;box-sizing:border-box;}';
-  pg += 'body{background:#0A0A0A;color:#fff;font-family:Montserrat,sans-serif;}';
+  pg += 'html{overflow-x:hidden;}';
+  pg += 'body{background:#0A0A0A;color:#fff;font-family:Montserrat,sans-serif;overflow-x:hidden;}';
   pg += '::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:#F97316;border-radius:3px;}';
   pg += '.bar{background:#111;border-bottom:1px solid rgba(249,115,22,0.2);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}';
   pg += '.back{color:#F97316;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;}';
@@ -286,6 +287,7 @@ function openCarPage(id) {
   pg += '.logo{font-family:"Bebas Neue",sans-serif;font-size:22px;letter-spacing:2px;color:#F97316;}';
   pg += '.hero{background:linear-gradient(135deg,#111,#1a1a1a);padding:40px 32px;}';
   pg += '.grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start;}';
+  pg += '.grid>div{min-width:0;}';
   pg += '.badges{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}';
   pg += '.bdg{background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.3);color:#F97316;font-size:11px;font-weight:700;padding:4px 12px;border-radius:50px;letter-spacing:1px;text-transform:uppercase;}';
   pg += '.ctitle{font-family:"Bebas Neue",sans-serif;font-size:48px;letter-spacing:2px;line-height:1;margin-bottom:6px;}';
@@ -309,7 +311,8 @@ function openCarPage(id) {
   pg += '.desc p{color:#888;font-size:15px;line-height:1.8;}';
   pg += '.ftr{background:#111;border-top:1px solid rgba(255,255,255,0.06);padding:20px 32px;text-align:center;color:#555;font-size:12px;}';
   pg += '.ftr span{color:#F97316;}';
-  pg += '@media(max-width:768px){.grid{grid-template-columns:1fr;}.ctitle{font-size:36px;}.pval{font-size:40px;}.hero,.specs{padding:24px 16px;}.bar{padding:12px 16px;}}';
+  pg += '@media(max-width:768px){.grid{grid-template-columns:1fr;gap:24px;}.ctitle{font-size:32px;}.pval{font-size:36px;}.hero,.specs{padding:20px 16px;}.bar{padding:12px 16px;}.logo{font-size:18px;}}';
+  pg += '@media(max-width:400px){.ctitle{font-size:26px;}.pval{font-size:30px;}.pbox{padding:14px 16px;}}';
   pg += '</style></head><body>';
 
   pg += '<div class="bar">';
