@@ -88,13 +88,8 @@
     </div>
     <p class="section-sub" style="text-align:right;">Todos os veículos passam por rigorosa inspeção antes de entrar no nosso estoque.</p>
   </div>
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="filterCars('todos',this)">Todos</button>
-    <button class="filter-btn" onclick="filterCars('sedan',this)">Sedan</button>
-    <button class="filter-btn" onclick="filterCars('hatch',this)">Hatch</button>
-    <button class="filter-btn" onclick="filterCars('suv',this)">SUV</button>
-    <button class="filter-btn" onclick="filterCars('pickup',this)">Pickup</button>
-    <button class="filter-btn" onclick="filterCars('utilitario',this)">Utilitário</button>
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" onclick="filterCars('todos')">Todos</button>
   </div>
   <div class="search-bar">
     <input type="text" class="search-input" id="searchInput" placeholder="&#128269;  Buscar por marca, modelo, ano..." oninput="searchCars()">
@@ -412,6 +407,11 @@
                 <option value="suv">SUV</option>
                 <option value="pickup">Pickup</option>
                 <option value="utilitario">Utilitário</option>
+                <option value="moto">Moto</option>
+                <option value="jetski">Jet Ski</option>
+                <option value="onibus">Ônibus</option>
+                <option value="caminhao">Caminhão</option>
+                <option value="quadriciclo">Quadriciclo</option>
               </select>
             </div>
             <div class="admin-form-group">
@@ -422,12 +422,10 @@
               </select>
             </div>
             <div class="admin-form-group">
-              <label>Enquadramento da Foto</label>
-              <select id="car-position">
-                <option value="center">Centro (padrão)</option>
-                <option value="top">Topo</option>
-                <option value="bottom">Baixo</option>
-              </select>
+              <label>Recorte da Foto de Capa</label>
+              <button type="button" id="btn-open-crop" onclick="openCropModal()" class="crop-open-btn">&#9986; Ajustar Enquadramento</button>
+              <span id="crop-pos-display" style="display:block;font-size:12px;color:var(--orange);font-family:'Montserrat',sans-serif;margin-top:6px;font-weight:600;">posição: 50% · 50%</span>
+              <input type="hidden" id="car-position" value="50% 50%">
             </div>
             <div class="admin-form-group">
               <label>Status</label>
@@ -482,6 +480,36 @@
 
 <!-- TOAST -->
 <div class="success-toast" id="successToast"></div>
+
+<!-- CROP MODAL -->
+<div id="crop-modal">
+  <div class="crop-box">
+    <div class="crop-header">
+      <span>Ajustar Enquadramento da Foto de Capa</span>
+      <button onclick="closeCropModal()">&#10005;</button>
+    </div>
+    <div class="crop-body">
+      <div class="crop-left">
+        <p class="crop-hint">Clique ou arraste para definir o ponto focal da imagem</p>
+        <div id="crop-wrap">
+          <img id="crop-full-img" src="" alt="">
+          <div id="crop-dot"></div>
+        </div>
+      </div>
+      <div class="crop-right">
+        <p class="crop-hint">Prévia — como aparece no cartão</p>
+        <div class="crop-preview-card">
+          <img id="crop-prev-img" src="" alt="">
+        </div>
+        <p id="crop-pos-label" class="crop-pos-label">50% · 50%</p>
+      </div>
+    </div>
+    <div class="crop-footer">
+      <button onclick="saveCropPosition()" class="crop-save-btn">&#10003; Salvar Posição</button>
+      <button onclick="closeCropModal()" class="crop-cancel-btn">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
