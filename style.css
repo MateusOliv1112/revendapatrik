@@ -543,18 +543,12 @@ body { background: var(--black); color: var(--white); font-family: 'Inter', sans
   background: linear-gradient(180deg, var(--black) 0%, var(--dark) 100%);
 }
 .sobre-inner {
-  max-width: 1300px;
+  max-width: 860px;
   margin: 0 auto;
   padding: 0 24px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
 }
-.sobre-visual { position: relative; }
 .sobre-img-box {
-  background: linear-gradient(135deg, var(--dark2), var(--dark3));
-  border-radius: 20px;
+  display: none;
   aspect-ratio: 4/3;
   display: flex;
   align-items: center;
@@ -1236,7 +1230,6 @@ footer {
 @media (max-width: 768px) {
   .nav-links    { display: none; }
   .hamburger    { display: flex; }
-  .sobre-visual { display: none; }
   .admin-form-grid { grid-template-columns: 1fr; }
   .footer-top   { grid-template-columns: 1fr; }
 
