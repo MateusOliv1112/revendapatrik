@@ -105,9 +105,12 @@ function getCarPosition(car, idx) {
   return idx === 0 ? (car.position || 'center') : 'center';
 }
 
-function cloudinaryHQ(url, w, h) {
+function cloudinaryHQ(url, baseW, baseH) {
   if (!url || url.indexOf('res.cloudinary.com') === -1) return url;
   if (url.indexOf('q_auto') !== -1) return url;
+  var dpr = Math.min(Math.round(window.devicePixelRatio || 1), 2);
+  var w = baseW ? baseW * dpr : null;
+  var h = baseH ? baseH * dpr : null;
   var t;
   if (w && h) t = 'w_' + w + ',h_' + h + ',c_fill,g_auto,q_auto:best,f_auto';
   else if (w)  t = 'w_' + w + ',c_limit,q_auto:best,f_auto';
@@ -179,7 +182,7 @@ function renderCars() {
     html += '<div class="car-card" onclick="openCarPage(\'' + safeId + '\')">';
     html += '  <div class="car-card-img">';
     if (img) {
-      html += '    <img src="' + escapeHtml(cloudinaryHQ(img, 900, 562)) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(getCarPosition(c, 0)) + ';" onerror="this.style.display=\'none\'">';
+      html += '    <img src="' + escapeHtml(cloudinaryHQ(img, 500, 312)) + '" alt="' + escapeHtml(c.marca) + ' ' + escapeHtml(c.modelo) + '" style="object-position:' + escapeHtml(getCarPosition(c, 0)) + ';" onerror="this.style.display=\'none\'">';
     }
     html += '    <div class="car-badge">' + escapeHtml(c.combustivel) + '</div>';
     html += '  </div>';
@@ -249,7 +252,7 @@ function openCarPage(id) {
   if (!car) return;
 
   var imgs    = getCarImgs(car);
-  var hqImgs  = imgs.map(function(u) { return cloudinaryHQ(u, 1400); });
+  var hqImgs  = imgs.map(function(u) { return cloudinaryHQ(u, 700); });
   var preco  = escapeHtml(fmtPrice(car.preco));
   var tipo   = escapeHtml(car.tipo.charAt(0).toUpperCase() + car.tipo.slice(1));
   var wppMsg = encodeURIComponent('Olá! Vi o ' + car.marca + ' ' + car.modelo + ' ' + car.versao + ' ' + car.ano + ' no site da Patrik Veículos e tenho interesse!');
@@ -280,7 +283,7 @@ function openCarPage(id) {
     sliderHtml += '</div>';
     sliderHtml += '<div style="display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px;">';
     for (var t = 0; t < imgs.length; t++) {
-      sliderHtml += '<img src="' + cloudinaryHQ(imgs[t], 200, 125) + '" id="th' + t + '" onclick="sGo(' + t + ')" style="width:72px;height:52px;object-fit:cover;object-position:' + (carPositions[t] || 'center') + ';border-radius:6px;cursor:pointer;flex-shrink:0;border:' + (t === 0 ? '2px solid #F97316' : '2px solid transparent') + ';opacity:' + (t === 0 ? '1' : '0.65') + ';transition:all 0.2s;">';
+      sliderHtml += '<img src="' + cloudinaryHQ(imgs[t], 100) + '" id="th' + t + '" onclick="sGo(' + t + ')" style="width:72px;height:52px;object-fit:cover;object-position:' + (carPositions[t] || 'center') + ';border-radius:6px;cursor:pointer;flex-shrink:0;border:' + (t === 0 ? '2px solid #F97316' : '2px solid transparent') + ';opacity:' + (t === 0 ? '1' : '0.65') + ';transition:all 0.2s;">';
     }
     sliderHtml += '</div>';
   }
