@@ -910,7 +910,7 @@ function renderAdminList() {
     var safeId = escapeHtml(c.id);
     h += '<div class="admin-car-row">';
     h += '  <div style="width:60px;height:40px;background:var(--dark3);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-width:60px;">';
-    if (img) h += '    <img src="' + escapeHtml(cloudinaryHQ(img, 30, 19)) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
+    if (img) h += '    <img src="' + escapeHtml(cloudinaryHQ(img, 60, 40)) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
     else h += '&#128663;';
     h += '  </div>';
     h += '  <div class="admin-car-row-info">';
